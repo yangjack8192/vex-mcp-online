@@ -4,7 +4,7 @@
       "runtime": "nodejs18.x",
       "memory": 512,
       "maxDuration": 20,
-      "includeFiles": ["node_modules/vex-mcp-server/**/*"]
+      "includeFiles": "node_modules/vex-mcp-server/**"
     }
   }
 }
