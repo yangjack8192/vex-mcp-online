@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
+import 'vex-mcp-server'; // 帮助依赖追踪
 
 const require_ = createRequire(import.meta.url);
 
