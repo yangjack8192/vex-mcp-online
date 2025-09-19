@@ -11,11 +11,25 @@ type RpcReq =
 
 // 统一解析 vex-mcp-server 的入口文件（优先 build/index.js）
 function resolveVexEntry(): string {
+  console.log('DEBUG: Attempting to resolve vex-mcp-server...');
+  console.log('DEBUG: Current working directory:', process.cwd());
+  console.log('DEBUG: Available modules in node_modules:', require('fs').existsSync('./node_modules') ? require('fs').readdirSync('./node_modules').filter(d => d.includes('vex')).slice(0, 5) : 'node_modules not found');
+
   try {
-    return require_.resolve('vex-mcp-server/build/index.js');
-  } catch {
-    // 兜底到包的 main
-    return require_.resolve('vex-mcp-server');
+    const buildPath = require_.resolve('vex-mcp-server/build/index.js');
+    console.log('DEBUG: Resolved build/index.js path:', buildPath);
+    return buildPath;
+  } catch (e) {
+    console.log('DEBUG: Failed to resolve build/index.js:', e.message);
+    try {
+      // 兜底到包的 main
+      const mainPath = require_.resolve('vex-mcp-server');
+      console.log('DEBUG: Resolved main path:', mainPath);
+      return mainPath;
+    } catch (e2) {
+      console.log('DEBUG: Failed to resolve main:', e2.message);
+      throw e2;
+    }
   }
 }
 
