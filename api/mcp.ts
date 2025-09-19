@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
 
 type RpcReq =
   | { method: 'tools/list'; params?: any }
@@ -7,13 +8,20 @@ type RpcReq =
 
 function runMcpOnce(payload: RpcReq, extraEnv: Record<string, string>): Promise<any> {
   return new Promise((resolve, reject) => {
+    // Use createRequire to resolve modules in ES modules environment
+    const require = createRequire(import.meta.url);
+
     // 解析 vex-mcp-server 的入口文件；优先尝试 build/index.js
     let entry: string;
     try {
       entry = require.resolve('vex-mcp-server/build/index.js');
     } catch {
-      // 兜底：有些包 main 指到根
-      entry = require.resolve('vex-mcp-server');
+      try {
+        // 兜底：有些包 main 指到根
+        entry = require.resolve('vex-mcp-server');
+      } catch (e) {
+        return reject(new Error(`Cannot resolve vex-mcp-server: ${e}`));
+      }
     }
 
     const child = spawn(process.execPath, [entry], {
