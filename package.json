@@ -1,0 +1,8 @@
+{
+  "name": "vex-mcp-online",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "vex-mcp-server": "^1.0.0"
+  }
+}
